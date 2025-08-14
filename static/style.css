@@ -1,4 +1,31 @@
-body { font-family: Arial; margin: 20px; }
-nav a { margin-right: 10px; }
-table { border-collapse: collapse; margin-top: 10px; }
-td, th { border: 1px solid #ccc; padding: 5px 10px; }
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+nav a {
+    margin-right: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #333;
+}
+
+nav a:hover {
+    color: #007BFF;
+}
+
+table {
+    border-collapse: collapse;
+    width: 80%;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 8px 12px;
+    border: 1px solid #333;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
