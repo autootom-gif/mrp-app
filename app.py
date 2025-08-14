@@ -1,34 +1,32 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from config import Config
-from models import db, Magazyn, BOM, Produkcja
+from models import db, Magazyn, Produkcja, Bom
 
 app = Flask(__name__)
 app.config.from_object(Config)
-
 db.init_app(app)
 
-@app.before_first_request
-def create_tables():
+with app.app_context():
     db.create_all()
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/magazyn/view')
-def view_magazyn():
-    produkty = Magazyn.query.all() or []
-    return render_template('magazyn.html', produkty=produkty)
+@app.route('/magazyn')
+def magazyn():
+    items = Magazyn.query.all()
+    return render_template('magazyn.html', items=items)
 
-@app.route('/bom/view')
-def view_bom():
-    bom = BOM.query.all() or []
-    return render_template('bom.html', bom=bom)
+@app.route('/produkcja')
+def produkcja():
+    produkcja_items = Produkcja.query.all()
+    return render_template('produkcja.html', items=produkcja_items)
 
-@app.route('/produkcja/view')
-def view_produkcja():
-    produkcja = Produkcja.query.all() or []
-    return render_template('produkcja.html', produkcja=produkcja)
+@app.route('/bom')
+def bom():
+    bom_items = Bom.query.all()
+    return render_template('bom.html', items=bom_items)
 
 if __name__ == '__main__':
     app.run(debug=True)
