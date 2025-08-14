@@ -7,12 +7,11 @@
 </head>
 <body>
     <nav>
-        <a href="/">Strona główna</a> |
-        <a href="/magazyn/view">Magazyn</a> |
-        <a href="/bom/view">BOM</a> |
-        <a href="/produkcja/view">Produkcja</a>
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('magazyn') }}">Magazyn</a>
+        <a href="{{ url_for('produkcja') }}">Produkcja</a>
+        <a href="{{ url_for('bom') }}">BOM</a>
     </nav>
-    <hr>
     <div class="content">
         {% block content %}{% endblock %}
     </div>
