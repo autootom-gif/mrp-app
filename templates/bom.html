@@ -1,24 +1,13 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h2>BOM</h2>
-<table border="1">
+<h1>BOM</h1>
+<table>
+    <tr><th>Produkt</th><th>Komponent</th><th>Ilość</th></tr>
+    {% for item in items %}
     <tr>
-        <th>ID</th>
-        <th>Produkt</th>
-        <th>Komponent</th>
-        <th>Ilość</th>
-    </tr>
-    {% for b in bom %}
-    <tr>
-        <td>{{ b.id }}</td>
-        <td>{{ b.produkt }}</td>
-        <td>{{ b.komponent }}</td>
-        <td>{{ b.ilosc }}</td>
-    </tr>
-    {% else %}
-    <tr>
-        <td colspan="4">Brak danych BOM</td>
+        <td>{{ item.produkt }}</td>
+        <td>{{ item.komponent }}</td>
+        <td>{{ item.ilosc }}</td>
     </tr>
     {% endfor %}
 </table>
