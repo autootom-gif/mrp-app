@@ -1,80 +1,69 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, jsonify, request
+from flask_sqlalchemy import SQLAlchemy
 from config import Config
-from models import db, Produkt, Komponent, BOM, Przyjecie, Produkcja
 
 app = Flask(__name__)
 app.config.from_object(Config)
-db.init_app(app)
+db = SQLAlchemy(app)
 
-with app.app_context():
-    db.create_all()
+# --- MODELE ---
+class Magazyn(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nazwa_produktu = db.Column(db.String(100), nullable=False)
+    ilosc = db.Column(db.Integer, default=0)
 
+class BOM(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    produkt_finalny = db.Column(db.String(100), nullable=False)
+    komponent = db.Column(db.String(100), nullable=False)
+    ilosc = db.Column(db.Integer, default=0)
+
+class Produkcja(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    produkt_finalny = db.Column(db.String(100), nullable=False)
+    ilosc = db.Column(db.Integer, default=0)
+
+# --- ROUTES ---
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return "MRP App działa!"
 
 # Magazyn
-@app.route('/magazyn')
-def magazyn():
-    produkty = Produkt.query.all()
-    return render_template('magazyn.html', produkty=produkty)
+@app.route('/magazyn', methods=['GET'])
+def get_magazyn():
+    produkty = Magazyn.query.all()
+    return jsonify([{'id': p.id, 'nazwa_produktu': p.nazwa_produktu, 'ilosc': p.ilosc} for p in produkty])
 
-@app.route('/dodaj_produkt', methods=['POST'])
-def dodaj_produkt():
-    nazwa = request.form['nazwa']
-    ilosc = int(request.form['ilosc'])
-    produkt = Produkt(nazwa=nazwa, stan=ilosc)
+@app.route('/magazyn', methods=['POST'])
+def add_magazyn():
+    data = request.get_json()
+    produkt = Magazyn(nazwa_produktu=data['nazwa_produktu'], ilosc=data.get('ilosc', 0))
     db.session.add(produkt)
     db.session.commit()
-    return redirect('/magazyn')
+    return jsonify({'message': 'Produkt dodany'}), 201
 
-# Komponenty
-@app.route('/bom')
-def bom():
-    boms = BOM.query.all()
-    produkty = Produkt.query.all()
-    komponenty = Komponent.query.all()
-    return render_template('bom.html', boms=boms, produkty=produkty, komponenty=komponenty)
+# BOM
+@app.route('/bom', methods=['GET'])
+def get_bom():
+    bom = BOM.query.all()
+    return jsonify([{'id': b.id, 'produkt_finalny': b.produkt_finalny, 'komponent': b.komponent, 'ilosc': b.ilosc} for b in bom])
 
-@app.route('/dodaj_bom', methods=['POST'])
-def dodaj_bom():
-    produkt_id = int(request.form['produkt_id'])
-    komponent_id = int(request.form['komponent_id'])
-    ilosc = int(request.form['ilosc'])
-    db.session.add(BOM(produkt_id=produkt_id, komponent_id=komponent_id, ilosc=ilosc))
+@app.route('/bom', methods=['POST'])
+def add_bom():
+    data = request.get_json()
+    b = BOM(produkt_finalny=data['produkt_finalny'], komponent=data['komponent'], ilosc=data.get('ilosc',1))
+    db.session.add(b)
     db.session.commit()
-    return redirect('/bom')
+    return jsonify({'message':'BOM dodany'}), 201
 
 # Produkcja
-@app.route('/produkcja')
-def produkcja():
-    produkcje = Produkcja.query.all()
-    produkty = Produkt.query.all()
-    return render_template('produkcja.html', produkcje=produkcje, produkty=produkty)
-
-@app.route('/dodaj_produkcje', methods=['POST'])
-def dodaj_produkcje():
-    produkt_id = int(request.form['produkt_id'])
-    ilosc = int(request.form['ilosc'])
-    db.session.add(Produkcja(produkt_id=produkt_id, ilosc=ilosc))
+@app.route('/produkcja', methods=['POST'])
+def add_produkcja():
+    data = request.get_json()
+    p = Produkcja(produkt_finalny=data['produkt_finalny'], ilosc=data.get('ilosc',1))
+    db.session.add(p)
     db.session.commit()
-    return redirect('/produkcja')
-
-# Przyjęcia magazynowe
-@app.route('/przyjecia')
-def przyjecia():
-    przyjecia = Przyjecie.query.all()
-    komponenty = Komponent.query.all()
-    return render_template('przyjecia.html', przyjecia=przyjecia, komponenty=komponenty)
-
-@app.route('/dodaj_przyjecie', methods=['POST'])
-def dodaj_przyjecie():
-    komponent_id = int(request.form['komponent_id'])
-    ilosc = int(request.form['ilosc'])
-    db.session.add(Przyjecie(komponent_id=komponent_id, ilosc=ilosc))
-    komponent = Komponent.query.get(komponent_id)
-    db.session.commit()
-    return redirect('/przyjecia')
+    return jsonify({'message':'Produkcja dodana'}), 201
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
