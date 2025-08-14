@@ -1,18 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="pl">
 <head>
-    <title>Mini MRP</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <title>MRP App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <nav>
-        <a href="/">Home</a> |
-        <a href="/magazyn">Magazyn</a> |
-        <a href="/bom">BOM</a> |
-        <a href="/produkcja">Produkcja</a> |
-        <a href="/przyjecia">Przyjęcia</a>
+        <a href="/">Strona główna</a> |
+        <a href="/magazyn/view">Magazyn</a> |
+        <a href="/bom/view">BOM</a> |
+        <a href="/produkcja/view">Produkcja</a>
     </nav>
     <hr>
-    {% block content %}{% endblock %}
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
 </body>
 </html>
