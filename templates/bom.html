@@ -1,27 +1,7 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h1>BOM (Bill of Materials)</h1>
-
-<h2>Dodaj komponent do produktu</h2>
-<form method="POST" action="/dodaj_bom">
-    Produkt:
-    <select name="produkt_id" required>
-        {% for p in produkty %}
-        <option value="{{ p.id }}">{{ p.nazwa }}</option>
-        {% endfor %}
-    </select>
-    Komponent:
-    <select name="komponent_id" required>
-        {% for k in komponenty %}
-        <option value="{{ k.id }}">{{ k.nazwa }}</option>
-        {% endfor %}
-    </select>
-    Ilość:
-    <input type="number" name="ilosc" min="1" required>
-    <button type="submit">Dodaj</button>
-</form>
-
-<h2>Lista BOM</h2>
+<h2>BOM</h2>
 <table border="1">
     <tr>
         <th>ID</th>
@@ -29,7 +9,17 @@
         <th>Komponent</th>
         <th>Ilość</th>
     </tr>
-    {% for b in boms %}
+    {% for b in bom %}
     <tr>
         <td>{{ b.id }}</td>
-        <td>{{ b.produ
+        <td>{{ b.produkt }}</td>
+        <td>{{ b.komponent }}</td>
+        <td>{{ b.ilosc }}</td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="4">Brak danych BOM</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
