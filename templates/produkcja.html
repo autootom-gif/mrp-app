@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Produkcja</h1>
+
+<h2>Dodaj plan produkcji</h2>
+<form method="POST" action="/dodaj_produkcje">
+    Produkt:
+    <select name="produkt_id" required>
+        {% for p in produkty %}
+        <option value="{{ p.id }}">{{ p.nazwa }}</option>
+        {% endfor %}
+    </select>
+    Ilość:
+    <input type="number" name="ilosc" min="1" required>
+    <button type="submit">Dodaj</button>
+</form>
+
+<h2>Plan produkcji</h2>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Produkt</th>
+        <th>Ilość</th>
+        <th>Status</th>
+    </tr>
+    {% for prod in produkcje %}
+    <tr>
+        <td>{{ prod.id }}</td>
+        <td>{{ prod.produkt.nazwa }}</td>
+        <td>{{ prod.ilosc }}</td>
+        <td>{{ prod.status }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

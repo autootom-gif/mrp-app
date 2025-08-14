@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Magazyn</h1>
+<form method="POST" action="/dodaj_produkt">
+    Nazwa: <input type="text" name="nazwa">
+    Ilość: <input type="number" name="ilosc">
+    <button type="submit">Dodaj</button>
+</form>
+<table border="1">
+    <tr><th>Nazwa</th><th>Stan</th></tr>
+    {% for p in produkty %}
+    <tr><td>{{p.nazwa}}</td><td>{{p.stan}}</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

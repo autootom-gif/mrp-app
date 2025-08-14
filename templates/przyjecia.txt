@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Przyjęcia magazynowe</h1>
+
+<h2>Dodaj przyjęcie komponentu</h2>
+<form method="POST" action="/dodaj_przyjecie">
+    Komponent:
+    <select name="komponent_id" required>
+        {% for k in komponenty %}
+        <option value="{{ k.id }}">{{ k.nazwa }}</option>
+        {% endfor %}
+    </select>
+    Ilość:
+    <input type="number" name="ilosc" min="1" required>
+    <button type="submit">Dodaj</button>
+</form>
+
+<h2>Historia przyjęć</h2>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Komponent</th>
+        <th>Ilość</th>
+    </tr>
+    {% for pr in przyjecia %}
+    <tr>
+        <td>{{ pr.id }}</td>
+        <td>{{ pr.komponent.nazwa }}</td>
+        <td>{{ pr.ilosc }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
